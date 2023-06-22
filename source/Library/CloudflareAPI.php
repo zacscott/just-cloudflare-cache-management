@@ -25,16 +25,34 @@ class CloudflareAPI {
      */
     public function clear_cache() {
 
+        $success = false;
+
         $zone_id = $this->get_zone_id();
         if ( $zone_id ) {
 
-            // TODO clear cache API call.
+            $api_url = sprintf(
+                'https://api.cloudflare.com/client/v4/zones/%s/purge_cache',
+                $zone_id
+            );
+
+            $response = $this->api_call( 
+                'DELETE', 
+                $api_url,
+                [],
+                [
+                    'purge_everything' => true,
+                ]
+            );
+    
+            $success = null !== $response;
 
         }
 
+        return $success;
+
         //Purge the entire cache via API
         // $ch_purge = curl_init();
-        // curl_setopt($ch_purge, CURLOPT_URL, "https://api.cloudflare.com/client/v4/zones/".$cust_zone."/purge_cache");
+        // curl_setopt($ch_purge, CURLOPT_URL, "");
         // curl_setopt($ch_purge, CURLOPT_CUSTOMREQUEST, "DELETE");
         // curl_setopt($ch_purge, CURLOPT_RETURNTRANSFER, 1);
         // $headers = [
@@ -42,7 +60,7 @@ class CloudflareAPI {
         //     'X-Auth-Key: '.$cust_xauth,
         //     'Content-Type: application/json'
         // ];
-        // $data = json_encode(array("purge_everything" => true));
+        // $data = json_encode(array());
         // curl_setopt($ch_purge, CURLOPT_POST, true);
         // curl_setopt($ch_purge, CURLOPT_POSTFIELDS, $data);
         // curl_setopt($ch_purge, CURLOPT_HTTPHEADER, $headers);
