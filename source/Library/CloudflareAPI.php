@@ -66,12 +66,20 @@ class CloudflareAPI {
 
         $api_credentials = $this->get_api_credentials();
 
-        $api_url = sprintf(
-            'https://api.cloudflare.com/client/v4/zones?name=%s&status=active&page=1&per_page=1&order=status&direction=desc&match=all',
-            urlencode( $api_credentials['domain'] )
+        $response = $this->api_call( 
+            'GET', 
+            'https://api.cloudflare.com/client/v4/zones',
+            [
+                'name'     => $api_credentials['domain'],
+                'status'   => 'active',
+                'page'     => 1,
+                'per_page' => 1,
+                'order'    => 'status',
+                'direction'=> 'desc',
+                'match'    => 'all',
+            ]
         );
 
-        $response = $this->api_call( 'GET', $api_url );
         if ( $response ) {
             $zone_id = $response['result'][0]['id'];
         }
@@ -80,9 +88,11 @@ class CloudflareAPI {
 
     }
 
-    protected function api_call( string $method, string $url, array $data = [] ) {
+    protected function api_call( string $method, string $url, array $query, array $data = [] ) {
 
         $api_credentials = $this->get_api_credentials();
+
+        $url = add_query_arg( $query, $url );
 
         $request = [
             'method'      => $method,
