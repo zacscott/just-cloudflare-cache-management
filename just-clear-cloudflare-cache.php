@@ -14,4 +14,4 @@ define( 'JUST_CLOUDFLARE_CACHE_MANAGEMENT_PLUGIN_ABSPATH', dirname( __FILE__ ) )
 define( 'JUST_CLOUDFLARE_CACHE_MANAGEMENT_PLUGIN_ABSURL', plugin_dir_url( __FILE__ )  );
 
 // Boot each of the plugin logic controllers.
-new \JustCloudflareCacheManagement\Controller\ClearPostCacheController();
+new \JustCloudflareCacheManagement\Controller\ClearURLCacheController();
