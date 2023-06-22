@@ -28,7 +28,7 @@ class ClearPostCacheController {
 
         $cache_manager = new CacheManager();
 
-        var_dump( $cache_manager->clear_cache() );
+        var_dump( $cache_manager->clear_cache_for_urls( [ 'https://zacscott.net/test' ] ) );
         die();
 
     }

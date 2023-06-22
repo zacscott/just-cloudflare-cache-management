@@ -5,26 +5,15 @@ namespace JustCloudflareCacheManagement\Library;
 class CacheManager {
 
     /**
-     * Clear the Cloudflare cache for a specific post.
+     * Clear the cache for specific URLs.
      * 
-     * @param int $post_id The ID of the post to clear the cache for.
+     * @param array $url_prefixes The URL prefixes to clear the cache for.
      */
-    public function clear_for_post( int $post_id ) {
-
-        return $this->clear_for_url( get_permalink( $post_id ) );
-
-    }
-
-    /**
-     * Clear the cache for a specific URL.
-     * 
-     * @param string $url The URL to clear the cache for.
-     */
-    public function clear_for_url( string $url ) {
+    public function clear_cache_for_urls( array $url_prefixes ) {
 
         $cloudflare_api = new CloudflareAPI();
 
-        $cloudflare_api->clear_for_url( $url );
+        $cloudflare_api->clear_cache_for_urls( $url_prefixes );
         $this->clear_object_cache();
 
     }

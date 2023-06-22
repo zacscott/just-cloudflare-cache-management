@@ -5,18 +5,49 @@ namespace JustCloudflareCacheManagement\Library;
 class CloudflareAPI {
 
     /**
-     * Clear the cache for a specific URL.
+     * Clear the cache for specific URLs.
      * 
-     * @param string $url The URL to clear the cache for.
+     * @param array $url_prefixes The URL prefixes to clear the cache for.
      */
-    public function clear_for_url( string $url ) {
+    public function clear_cache_for_urls( array $url_prefixes ) {
+
+        $success = false;
 
         $zone_id = $this->get_zone_id();
         if ( $zone_id ) {
 
-            // TODO clear cache API call.
+            // Build Cloudflare API files array of each URL to be cleared.
+
+            $files = [];
+            foreach ( $url_prefixes as $url_prefix ) {
+
+                $files[] = [
+                    'url' => $url_prefix,
+                ];
+
+            }
+
+            // Make the API call.
+
+            $api_url = sprintf(
+                'https://api.cloudflare.com/client/v4/zones/%s/purge_cache',
+                $zone_id
+            );
+
+            $response = $this->api_call( 
+                'DELETE', 
+                $api_url,
+                [],
+                [
+                    'files' => $files,
+                ]
+            );
+    
+            $success = null !== $response;
 
         }
+
+        return $success;
 
     }
 
@@ -50,26 +81,6 @@ class CloudflareAPI {
 
         return $success;
 
-        //Purge the entire cache via API
-        // $ch_purge = curl_init();
-        // curl_setopt($ch_purge, CURLOPT_URL, "");
-        // curl_setopt($ch_purge, CURLOPT_CUSTOMREQUEST, "DELETE");
-        // curl_setopt($ch_purge, CURLOPT_RETURNTRANSFER, 1);
-        // $headers = [
-        //     'X-Auth-Email: '.$cust_email,
-        //     'X-Auth-Key: '.$cust_xauth,
-        //     'Content-Type: application/json'
-        // ];
-        // $data = json_encode(array());
-        // curl_setopt($ch_purge, CURLOPT_POST, true);
-        // curl_setopt($ch_purge, CURLOPT_POSTFIELDS, $data);
-        // curl_setopt($ch_purge, CURLOPT_HTTPHEADER, $headers);
-
-        // $result = json_decode(curl_exec($ch_purge),true);
-        // curl_close($ch_purge);
-
-        return false;
-
     }
 
     /**
@@ -78,7 +89,6 @@ class CloudflareAPI {
      * @return string
      */
     protected function get_zone_id() {
-        // TODO cache zone id
 
         $zone_id = null;
 
@@ -106,6 +116,15 @@ class CloudflareAPI {
 
     }
 
+    /**
+     * Make an API call to Cloudflare.
+     * 
+     * @param string $method The HTTP method to use.
+     * @param string $url The URL to make the request to.
+     * @param array $query The query parameters to add to the URL.
+     * @param array $data The data to send in the request body.
+     * @return array|null
+     */
     protected function api_call( string $method, string $url, array $query, array $data = [] ) {
 
         $api_credentials = $this->get_api_credentials();
