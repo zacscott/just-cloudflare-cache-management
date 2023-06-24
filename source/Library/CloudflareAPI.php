@@ -110,7 +110,22 @@ class CloudflareAPI {
             );
     
             if ( $response ) {
-                $zone_id = $response['result'][0]['id'];
+
+                if ( isset( $response['result'] ) ) {
+                    $result = $response['result'];
+
+                    if ( ! empty( $result ) ) {
+                        $first_result = $result[0];
+
+                        if ( isset( $first_result['id'] ) ) {
+                            $zone_id = $first_result['id'];
+
+                        }
+
+                    }
+
+                }
+                
             }
 
         }
@@ -172,12 +187,14 @@ class CloudflareAPI {
 
         $api_credentials = null;
 
+        $model = new \JustCloudflareCacheManagement\Model\SettingsModel();
+
         $url_parts = wp_parse_url( home_url() );
         $domain    = $url_parts['host'];
 
-        $email = get_option( 'just_cloudflare_cache_managment_email' );
+        $email = $model->get_value( 'email' );
 
-        $api_key = get_option( 'just_cloudflare_cache_managment_api_key' );
+        $api_key = $model->get_value( 'api_key' );
 
         if ( $email && $api_key && $domain ) {
 
