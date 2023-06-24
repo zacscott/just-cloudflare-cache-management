@@ -35,6 +35,8 @@ class FlushURLCacheController {
      */
     public function flush_cloudflare_cache_on_post_update( $post_id, $post_after, $post_before ) {
 
+        $cache_manager = new CacheManager();
+
         $should_flush_cache = false;
 
         // Clear the cache if the post status has changed.
@@ -45,20 +47,16 @@ class FlushURLCacheController {
 
         if ( $should_flush_cache ) {
 
-            $urls = $this->get_urls_for_post( $post_after );
+            if ( 'wp_block' === $post_after->post_type ) {
+                // Clear entire site cache when a reusable block is updated, as it could be anywhere on the site.
+                
+                $cache_manager->flush_cache();
 
-            /**
-             * Filter the URLs which should be cleared from the cache when the given post is updated.
-             * 
-             * @param array $urls The URLs to clear the cache for.
-             * @param int $post_id ID of the post that was updated.
-             */
-            $urls = apply_filters( 'just_cloudflare_cache_management_post_urls', $urls, $post_id );
+            } else {
 
-            // Clear the cache
+                $this->flush_cache_for_post( $post_after );
 
-            $cache_manager = new CacheManager();
-            $cache_manager->flush_cache_for_urls( $urls );
+            }
 
         }
 
@@ -92,6 +90,25 @@ class FlushURLCacheController {
             $cache_manager->flush_cache_for_urls( $urls );
 
         }
+
+    }
+
+    protected function flush_cache_for_post( $post ) {
+
+        $urls = $this->get_urls_for_post( $post );
+
+        /**
+         * Filter the URLs which should be cleared from the cache when the given post is updated.
+         * 
+         * @param array $urls The URLs to clear the cache for.
+         * @param int $post_id ID of the post that was updated.
+         */
+        $urls = apply_filters( 'just_cloudflare_cache_management_post_urls', $urls, $post->ID );
+
+        // Clear the cache
+
+        $cache_manager = new CacheManager();
+        $cache_manager->flush_cache_for_urls( $urls );
 
     }
 
