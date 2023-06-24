@@ -41,7 +41,7 @@ class FlushURLCacheController {
         $should_flush_cache = $should_flush_cache || $post_after->post_status !== $post_before->post_status;
 
         // Clear the cache if the post is published.
-        $should_flush_cache = $should_flush_cache || 'published' === $post_after->post_status;
+        $should_flush_cache = $should_flush_cache || 'publish' === $post_after->post_status;
 
         if ( $should_flush_cache ) {
 
