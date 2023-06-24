@@ -5,37 +5,36 @@ namespace JustCloudflareCacheManagement\Library;
 class CacheManager {
 
     /**
-     * Clear the cache for specific URLs.
+     * Flush the cache for specific URLs.
      * 
      * @param array $url_prefixes The URL prefixes to clear the cache for.
      */
-    public function clear_cache_for_urls( array $url_prefixes ) {
+    public function flush_cache_for_urls( array $url_prefixes ) {
 
         $cloudflare_api = new CloudflareAPI();
 
-        $cloudflare_api->clear_cache_for_urls( $url_prefixes );
-        $this->clear_object_cache();
+        $cloudflare_api->flush_cache_for_urls( $url_prefixes );
+        $this->flush_object_cache();
 
     }
 
     /**
-     * Clear the entire cache.
+     * Flush the entire cache.
      */
-    public function clear_cache() {
+    public function flush_cache() {
 
         $cloudflare_api = new CloudflareAPI();
 
-        $cloudflare_api->clear_cache();
-        $this->clear_object_cache();
+        $cloudflare_api->flush_cache();
+        $this->flush_object_cache();
 
     }
 
     /**
-     * Clear the entire WordPress object cache.
+     * Flush the entire WordPress object cache.
      */
-    public function clear_object_cache() {
+    public function flush_object_cache() {
 
-        // Flush the object cache.
         if ( function_exists( 'wp_cache_flush' ) ) {
             wp_cache_flush();
         }

@@ -9,7 +9,7 @@ class CloudflareAPI {
      * 
      * @param array $url_prefixes The URL prefixes to clear the cache for.
      */
-    public function clear_cache_for_urls( array $url_prefixes ) {
+    public function flush_cache_for_urls( array $url_prefixes ) {
 
         $success = false;
 
@@ -54,7 +54,7 @@ class CloudflareAPI {
     /**
      * Clear the entire Cloudflare cache.
      */
-    public function clear_cache() {
+    public function flush_cache() {
 
         $success = false;
 

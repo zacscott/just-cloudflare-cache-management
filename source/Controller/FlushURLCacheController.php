@@ -5,18 +5,18 @@ namespace JustCloudflareCacheManagement\Controller;
 use JustCloudflareCacheManagement\Library\CacheManager;
 
 /**
- * Responsible for clearing the Cloudflare cache on update of posts & pages managed by WordPress.
+ * Responsible for flushing the Cloudflare cache on update of posts & pages managed by WordPress.
  * This will attempt to clear the required pages only. Including the post permalink,
  * homepage, category page.
  * 
  * @package JustCloudflareCacheManagement\Controller
  */
-class ClearURLCacheController {
+class FlushURLCacheController {
 
     public function __construct() {
 
-        add_action( 'post_updated', [ $this, 'clear_cloudflare_cache_on_post_update' ], 999999999, 3 );
-        add_action( 'saved_term', [ $this, 'clear_cloudflare_cache_on_term_update' ], 999999999, 3 );
+        add_action( 'post_updated', [ $this, 'flush_cloudflare_cache_on_post_update' ], 999999999, 3 );
+        add_action( 'saved_term', [ $this, 'flush_cloudflare_cache_on_term_update' ], 999999999, 3 );
 
     }
 
@@ -27,17 +27,17 @@ class ClearURLCacheController {
      * @param WP_Post $post_after
      * @param WP_Post $post_before
      */
-    public function clear_cloudflare_cache_on_post_update( $post_id, $post_after, $post_before ) {
+    public function flush_cloudflare_cache_on_post_update( $post_id, $post_after, $post_before ) {
 
-        $should_clear_cache = false;
+        $should_flush_cache = false;
 
         // Clear the cache if the post status has changed.
-        $should_clear_cache = $should_clear_cache || $post_after->post_status !== $post_before->post_status;
+        $should_flush_cache = $should_flush_cache || $post_after->post_status !== $post_before->post_status;
 
         // Clear the cache if the post is published.
-        $should_clear_cache = $should_clear_cache || 'published' === $post_after->post_status;
+        $should_flush_cache = $should_flush_cache || 'published' === $post_after->post_status;
 
-        if ( $should_clear_cache ) {
+        if ( $should_flush_cache ) {
 
             $urls = $this->get_urls_for_post( $post_after );
 
@@ -52,7 +52,7 @@ class ClearURLCacheController {
             // Clear the cache
 
             $cache_manager = new CacheManager();
-            $cache_manager->clear_cache_for_urls( $urls );
+            $cache_manager->flush_cache_for_urls( $urls );
 
         }
 
@@ -65,7 +65,7 @@ class ClearURLCacheController {
      * @param int $tt_id
      * @param string $taxonomy
      */
-    public function clear_cloudflare_cache_on_term_update( $term_id, $tt_id, $taxonomy ) {
+    public function flush_cloudflare_cache_on_term_update( $term_id, $tt_id, $taxonomy ) {
 
         $term = get_term_by( 'ID', $term_id, $taxonomy );
         if ( $term && ! is_wp_error( $term ) ) {
@@ -83,7 +83,7 @@ class ClearURLCacheController {
             // Clear the cache
 
             $cache_manager = new CacheManager();
-            $cache_manager->clear_cache_for_urls( $urls );
+            $cache_manager->flush_cache_for_urls( $urls );
 
         }
 
