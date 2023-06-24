@@ -20,6 +20,13 @@ class ClearURLCacheController {
 
     }
 
+    /**
+     * Clear the cache when a post is updated.
+     * 
+     * @param int $post_id
+     * @param WP_Post $post_after
+     * @param WP_Post $post_before
+     */
     public function clear_cloudflare_cache_on_post_update( $post_id, $post_after, $post_before ) {
 
         $should_clear_cache = false;
@@ -51,6 +58,13 @@ class ClearURLCacheController {
 
     }
 
+    /**
+     * Clear the cache when a term is updated.
+     * 
+     * @param int $term_id
+     * @param int $tt_id
+     * @param string $taxonomy
+     */
     public function clear_cloudflare_cache_on_term_update( $term_id, $tt_id, $taxonomy ) {
 
         $term = get_term_by( 'ID', $term_id, $taxonomy );
