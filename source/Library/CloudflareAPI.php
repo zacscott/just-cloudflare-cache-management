@@ -179,6 +179,21 @@ class CloudflareAPI {
     }
 
     /**
+     * Whether the plugin API credentials are configured or not.
+     * 
+     * @return bool
+     */
+    public function is_configured() {
+
+        $api_credentials = $this->get_api_credentials();
+
+        $is_configured = ! empty( $api_credentials );
+
+        return $is_configured;
+
+    }
+
+    /**
      * Get the API credentials from the plugin settings.
      * 
      * @return array

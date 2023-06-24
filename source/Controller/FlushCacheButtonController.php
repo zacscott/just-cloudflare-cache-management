@@ -3,6 +3,7 @@
 namespace JustCloudflareCacheManagement\Controller;
 
 use JustCloudflareCacheManagement\Library\CacheManager;
+use JustCloudflareCacheManagement\Library\CloudflareAPI;
 
 /**
  * Responsible for managing the admin bar button which flush the entire Cloudflare cache.
@@ -15,8 +16,13 @@ class FlushCacheButtonController {
 
     public function __construct() {
 
-        add_action( 'admin_bar_menu', [ $this, 'add_flush_cache_button_to_admin_bar' ], 999999999 );
-        add_action( 'admin_init', [ $this, 'handle_flush_cache_request' ] );
+        $cloudflare_api = new CloudflareAPI();
+        if ( $cloudflare_api->is_configured() ) {
+
+            add_action( 'admin_bar_menu', [ $this, 'add_flush_cache_button_to_admin_bar' ], 999999999 );
+            add_action( 'admin_init', [ $this, 'handle_flush_cache_request' ] );
+
+        }
 
     }
 

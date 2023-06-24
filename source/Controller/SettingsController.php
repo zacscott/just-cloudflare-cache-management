@@ -2,6 +2,8 @@
 
 namespace JustCloudflareCacheManagement\Controller;
 
+use JustCloudflareCacheManagement\Library\CloudflareAPI;
+
 /**
  * Responsible for handling the settings page for the plugin.
  * 
@@ -21,6 +23,35 @@ class SettingsController {
         add_action( 'admin_menu', [ $this, 'register_settings_page' ] );
         add_action( 'admin_init', [ $this, 'register_settings_section' ] );
         add_action( 'admin_init', [ $this, 'register_settings' ] );
+
+        add_action( 'admin_notices', [ $this, 'render_unconfigured_plugin_warning' ] );
+
+    }
+
+    /**
+     * Render a warning notice in wp-admin when the plugin is not configured.
+     * 
+     * @return void
+     */
+    public function render_unconfigured_plugin_warning() {
+
+        $cloudflare_api = new CloudflareAPI();
+        
+        if ( ! $cloudflare_api->is_configured() ) :
+            ?>
+            <div class="error notice notice-success is-dismissible">
+                <p>
+                    <?php
+                        echo __(
+                            'Cloudflare cache management plugin is not configured. You can configure it ' . 
+                            '<a href="/wp-admin/options-general.php?page=justjust_cloudflare_cache_management">here</a>.',
+                            'just-cloudflare-cache-management'
+                        );
+                    ?>
+                </p>
+            </div>
+            <?php
+        endif;
 
     }
 

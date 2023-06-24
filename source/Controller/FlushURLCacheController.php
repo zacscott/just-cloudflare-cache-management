@@ -3,6 +3,7 @@
 namespace JustCloudflareCacheManagement\Controller;
 
 use JustCloudflareCacheManagement\Library\CacheManager;
+use JustCloudflareCacheManagement\Library\CloudflareAPI;
 
 /**
  * Responsible for flushing the Cloudflare cache on update of posts & pages managed by WordPress.
@@ -15,8 +16,13 @@ class FlushURLCacheController {
 
     public function __construct() {
 
-        add_action( 'post_updated', [ $this, 'flush_cloudflare_cache_on_post_update' ], 999999999, 3 );
-        add_action( 'saved_term', [ $this, 'flush_cloudflare_cache_on_term_update' ], 999999999, 3 );
+        $cloudflare_api = new CloudflareAPI();
+        if ( $cloudflare_api->is_configured() ) {
+
+            add_action( 'post_updated', [ $this, 'flush_cloudflare_cache_on_post_update' ], 999999999, 3 );
+            add_action( 'saved_term', [ $this, 'flush_cloudflare_cache_on_term_update' ], 999999999, 3 );
+
+        }
 
     }
 
