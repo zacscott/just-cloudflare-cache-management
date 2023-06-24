@@ -15,3 +15,4 @@ define( 'JUST_CLOUDFLARE_CACHE_MANAGEMENT_PLUGIN_ABSURL', plugin_dir_url( __FILE
 
 // Boot each of the plugin logic controllers.
 new \JustCloudflareCacheManagement\Controller\ClearURLCacheController();
+new \JustCloudflareCacheManagement\Controller\ClearCacheButtonController();
