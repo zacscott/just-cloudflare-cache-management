@@ -93,23 +93,26 @@ class CloudflareAPI {
         $zone_id = null;
 
         $api_credentials = $this->get_api_credentials();
+        if ( $api_credentials ) {
 
-        $response = $this->api_call( 
-            'GET', 
-            'https://api.cloudflare.com/client/v4/zones',
-            [
-                'name'     => $api_credentials['domain'],
-                'status'   => 'active',
-                'page'     => 1,
-                'per_page' => 1,
-                'order'    => 'status',
-                'direction'=> 'desc',
-                'match'    => 'all',
-            ]
-        );
+            $response = $this->api_call( 
+                'GET', 
+                'https://api.cloudflare.com/client/v4/zones',
+                [
+                    'name'     => $api_credentials['domain'],
+                    'status'   => 'active',
+                    'page'     => 1,
+                    'per_page' => 1,
+                    'order'    => 'status',
+                    'direction'=> 'desc',
+                    'match'    => 'all',
+                ]
+            );
+    
+            if ( $response ) {
+                $zone_id = $response['result'][0]['id'];
+            }
 
-        if ( $response ) {
-            $zone_id = $response['result'][0]['id'];
         }
 
         return $zone_id;
@@ -127,29 +130,33 @@ class CloudflareAPI {
      */
     protected function api_call( string $method, string $url, array $query, array $data = [] ) {
 
-        $api_credentials = $this->get_api_credentials();
-
-        $url = add_query_arg( $query, $url );
-
-        $request = [
-            'method'      => $method,
-            'headers'     => [
-                'X-Auth-Email' => $api_credentials['email'],
-                'X-Auth-Key'   => $api_credentials['key'],
-                'Content-Type' => 'application/json',
-            ],
-        ];
-
-        if ( ! empty( $data ) ) {
-            $request['body'] = json_encode( $data );
-            $request['data_format'] = 'body';
-        }
-
-        $response_raw = wp_remote_request( $url, $request );
-
         $response = null;
-        if ( ! is_wp_error( $response_raw ) && 200 === $response_raw['response']['code'] ) {
-            $response = json_decode( $response_raw['body'], true );
+
+        $api_credentials = $this->get_api_credentials();
+        if ( $api_credentials ) {
+
+            $url = add_query_arg( $query, $url );
+
+            $request = [
+                'method'      => $method,
+                'headers'     => [
+                    'X-Auth-Email' => $api_credentials['email'],
+                    'X-Auth-Key'   => $api_credentials['key'],
+                    'Content-Type' => 'application/json',
+                ],
+            ];
+
+            if ( ! empty( $data ) ) {
+                $request['body'] = json_encode( $data );
+                $request['data_format'] = 'body';
+            }
+
+            $response_raw = wp_remote_request( $url, $request );
+
+            if ( ! is_wp_error( $response_raw ) && 200 === $response_raw['response']['code'] ) {
+                $response = json_decode( $response_raw['body'], true );
+            }
+
         }
 
         return $response;
@@ -163,11 +170,24 @@ class CloudflareAPI {
      */
     protected function get_api_credentials() {
 
-        $api_credentials = [
-            'email'  => get_option( 'just_cloudflare_cache_managment_email' ),
-            'key'    => get_option( 'just_cloudflare_cache_managment_api_key' ),
-            'domain' => get_option( 'just_cloudflare_cache_managment_domain' ),
-        ];
+        $api_credentials = null;
+
+        $url_parts = wp_parse_url( home_url() );
+        $domain    = $url_parts['host'];
+
+        $email = get_option( 'just_cloudflare_cache_managment_email' );
+
+        $api_key = get_option( 'just_cloudflare_cache_managment_api_key' );
+
+        if ( $email && $api_key && $domain ) {
+
+            $api_credentials = [
+                'email'  => $email,
+                'key'    => $api_key,
+                'domain' => $domain,
+            ];
+
+        }
 
         return $api_credentials;
 
