@@ -1,7 +1,6 @@
 
 # Just Cloudflare Cache Management - WordPress Plugin
 
-Flush the Cloudflare edge cache for posts/pages when they are updated, and more.
 Automatically flushes the Cloudflare edge cache when a post or page is updated,
 ensuring that changes made to posts are immediately reflected on your website. 
 
