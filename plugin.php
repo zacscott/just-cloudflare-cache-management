@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Just Cloudflare Cache Management
- * Version:     1.0
+ * Version:     1.0.1
  * Author:      Zac Scott
  * Author URI:  https://zacscott.net
  * Description: Flush the Cloudflare edge cache for posts/pages when they are updated, and more.

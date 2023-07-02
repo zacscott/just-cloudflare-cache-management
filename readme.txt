@@ -23,6 +23,9 @@ You can read more about configuring the Cloudflare edge cache for WordPress here
 
 == Changelog ==
 
+= 1.0.1 =
+* Change plugin file.
+
 = 1.0 =
 * Initial release.
 
