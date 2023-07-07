@@ -13,4 +13,4 @@ plugin, you'll never have to worry about outdated content being served from the 
 
 You can read more about configuring the Cloudflare edge cache for WordPress here - https://zacscott.net/insights/cloudflare-edge-caching-in-wordpress
 
-![Cloudflare edge cache configuration](https://zacscott.net/wp-content/uploads/2023/06/image-9.png)
+![Cloudflare edge cache configuration](https://zacscott.net/asset/1393)
