@@ -2,7 +2,7 @@
 Contributors: zacscottau
 Tags: cache
 Requires at least: 6.0
-Tested up to: 6.2.2
+Tested up to: 6.3.1
 Stable tag: 1.0.1
 Requires PHP: 7.0
 License: GPLv3 or later
